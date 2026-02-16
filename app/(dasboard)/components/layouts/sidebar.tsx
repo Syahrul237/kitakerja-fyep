@@ -1,6 +1,9 @@
 "use client";
 
+import { logout } from "@/app/services/auth.services";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import {
   FiBox,
   FiCreditCard,
@@ -8,33 +11,38 @@ import {
   FiLogOut,
   FiShoppingCart,
 } from "react-icons/fi";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 
-function Sidebar() {
+const Sidebar = () => {
   const pathname = usePathname();
+  const { push } = useRouter();
+
   const menuItems = [
     {
       name: "Products",
       icon: FiBox,
-      Link: "/admin/products",
+      link: "/admin/products",
     },
     {
       name: "Categories",
       icon: FiLayers,
-      Link: "/admin/categories",
+      link: "/admin/categories",
     },
     {
-      name: "Transaction",
+      name: "Transactions",
       icon: FiShoppingCart,
-      Link: "/admin/transactions",
+      link: "/admin/transactions",
     },
     {
-      name: "Bank Informations",
+      name: "Bank Information",
       icon: FiCreditCard,
-      Link: "/admin/bank-info",
+      link: "/admin/bank-info",
     },
   ];
+
+  const handleLogout = () => {
+    logout();
+    push("/admin/login");
+  };
 
   return (
     <aside className="w-80 min-h-screen bg-white border-r border-gray-100 flex flex-col fixed left-0 top-0">
@@ -46,33 +54,32 @@ function Sidebar() {
           height={36}
         />
       </div>
-      ;
-      <div className="flex flex-col gap-2 mt-9 p-5">
+      <div className="flex flex-col gap-2 mt-12 p-5">
         {menuItems.map((item, index) => {
-          const isActive = item.Link === pathname;
+          const isActive = item.link === pathname;
           return (
             <Link
-              href={item.Link}
+              href={item.link}
               key={index}
-              className={`flex gap-3 items-center py-3 px-4.5 rounded-lg font-medium duration-300 ${isActive ? "bg-primary/15 text-primary" : "hover:bg-gray-100"}`}
+              className={`flex gap-3 items-center py-3 px-4.5 rounded-lg font-medium duration-300 ${
+                isActive ? "bg-primary/15 text-primary" : "hover:bg-gray-100"
+              }`}
             >
               <item.icon size={24} />
-              <span>
-                {item.name} {isActive && ""}
-              </span>
+              <span>{item.name}</span>
             </Link>
           );
         })}
       </div>
-      <Link
-        href="#"
+      <button
         className="flex cursor-pointer gap-3 font-medium py-3 px-4.5 mx-5 hover:bg-gray-100 duration-300 rounded-lg mt-auto mb-10"
+        onClick={handleLogout}
       >
         <FiLogOut size={24} />
-        LogOut
-      </Link>
+        Log Out
+      </button>
     </aside>
   );
-}
+};
 
 export default Sidebar;
